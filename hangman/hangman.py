@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 """Hangman - A simple CLI game.
 
 Guess a secret word letter by letter.
