@@ -32,3 +32,10 @@ jobs:
         name: hangman_installer
         path: hangman_installer.run
         if-no-files-found: error
+
+    - name: GH Release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+          files: hangman_installer.run
+      env:
+        GITHUB_REPOSITORY: SteveDaulton/Hangman-CLI
