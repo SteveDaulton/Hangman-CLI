@@ -34,5 +34,6 @@ jobs:
       uses: softprops/action-gh-release@v0.1.15
       with:
           files: hangman_installer.run
+          tag_name: v0.1.0
       env:
         GITHUB_REPOSITORY: SteveDaulton/Hangman-CLI
