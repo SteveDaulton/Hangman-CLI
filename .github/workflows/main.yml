@@ -2,9 +2,9 @@ name: Build and Release Installer
 
 on:
   workflow_dispatch:
-  # push:
-    # branches:
-      # - master
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
