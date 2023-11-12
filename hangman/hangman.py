@@ -46,12 +46,12 @@ def clear_terminal() -> None:
 def images() -> tuple[str, ...]:
     """Return a tuple of hangman (ascii) drawings."""
     return (r"""
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     =====""",
 
             r"""
