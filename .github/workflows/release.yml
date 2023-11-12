@@ -1,7 +1,6 @@
 name: Publish Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v*.*.*"
@@ -25,13 +24,6 @@ jobs:
       run: |
         chmod +x hangman/install_script.sh
         makeself --sha256 hangman/ hangman_installer.run "Hangman-CLI installer" ./install_script.sh
-
-    - name: Upload Installer Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: hangman_installer
-        path: hangman_installer.run
-        if-no-files-found: error
 
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.15
