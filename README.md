@@ -55,7 +55,8 @@ After installation, the game may be launched either from your Applications menu
 or by entering the command `hangman-cli` in a Terminal window.
 
 ### All Platforms
-The game is available from the same location as a single Python file:
+The game is also available from [the same location](https://github.com/SteveDaulton/Hangman-CLI/releases) 
+as a single Python file:
 1. Download the file: [hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases)
 2. Open a Terminal, Command Prompt or PowerShell
 3. Navigate to the folder containing `hangman.py`
