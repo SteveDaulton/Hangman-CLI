@@ -40,7 +40,7 @@ The installer app has been tested on Ubuntu and Debian.If you have any
 difficulty with it on your system, please post an issue to:
 https://github.com/SteveDaulton/Hangman-CLI/issues
 
-1. Download the file: ` hangman_installer.run `
+1. Download the file: [hangman_installer.run](https://github.com/SteveDaulton/Hangman-CLI/releases)
 2. Double-click on the installer to install the game.
 
 The installer will extract the following files:
@@ -56,7 +56,7 @@ or by entering the command `hangman-cli` in a Terminal window.
 
 ### All Platforms
 The game is available from the same location as a single Python file:
-1. Download the file: `hangman.py`
+1. Download the file: [hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases)
 2. Open a Terminal, Command Prompt or PowerShell
 3. Navigate to the folder containing `hangman.py`
 4. Launch the game with the command: `python3 hangman.py`
