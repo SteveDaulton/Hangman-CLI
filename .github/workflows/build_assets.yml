@@ -16,6 +16,35 @@ jobs:
       with:
         sparse-checkout: hangman
 
+    - name: Setup Python
+      uses: actions/setup-python@v4.7.1
+      with:
+        python-version: '3.12'
+
+    - name: Install linters
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint flake8 mypy
+
+    - name: Run Linters
+      id: lint
+      run: |
+        pylint hangman/*.py
+        pylint_status=$?
+        flake8 hangman
+        flake8_status=$?
+        mypy hangman
+        mypy_status=$?
+
+    - name: Check Linting Results
+      run: |
+        if [ $pylint_status -ne 0 ] || [ $flake8_status -ne 0 ] || [ $mypy_status -ne 0 ]; then
+          echo "Linting failed. Exiting..."
+          exit 1
+        else
+          echo "Linting succeeded."
+        fi
+
     - name: Install makeself
       run: |
         sudo apt-get update
