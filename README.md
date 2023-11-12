@@ -1,9 +1,9 @@
-# Hangman-CLI
-The classic word game, implemented in Python.
-
 <p align="center">
   <img src="hangman/hangman-cli.ico" alt="Hangman Logo">
 </p>
+
+# Hangman-CLI
+The classic word game, implemented in Python.
 
 The current version selects words that are all names of animals.
 
