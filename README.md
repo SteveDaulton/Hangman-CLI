@@ -62,12 +62,10 @@ The game is available from the same location as a single Python file:
 4. Launch the game with the command: `python3 hangman.py`
 
 ## License
-This program is released under the MIT license.
-https://github.com/SteveDaulton/Hangman-CLI/blob/master/LICENSE
+This program is released under the [MIT license](https://github.com/SteveDaulton/Hangman-CLI/blob/master/LICENSE).
 
 ## Issues
-Please report any issues here:
-https://github.com/SteveDaulton/Hangman-CLI/issues
+Please report any issues [HERE](https://github.com/SteveDaulton/Hangman-CLI/issues).
 
 ## Acknowledgments
 The installer for this game was created using [makeself](https://makeself.io/).
