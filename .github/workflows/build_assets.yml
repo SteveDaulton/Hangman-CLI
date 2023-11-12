@@ -1,10 +1,10 @@
-name: Build and Release Installer
+name: Build Installer Asset
 
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - master
 
 jobs:
   build:
@@ -18,24 +18,21 @@ jobs:
 
     - name: Install makeself
       run: |
-        sudo apt update
-        sudo apt install makeself
+        sudo apt-get update
+        sudo apt-get install makeself
 
     - name: Build Installer
       run: |
         chmod +x hangman/install_script.sh
         makeself --sha256 hangman/ hangman_installer.run "Hangman-CLI installer" ./install_script.sh
+        chmod +x hangman_installer.run
+
+    - name: Tar files
+      run: tar -cvf hangman_installer.tar hangman_installer.run
 
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v3
       with:
         name: hangman_installer
-        path: hangman_installer.run
+        path: hangman_installer.tar
         if-no-files-found: error
-
-    - name: GH Release
-      uses: softprops/action-gh-release@v0.1.15
-      with:
-          files: hangman_installer.run
-      env:
-        GITHUB_REPOSITORY: SteveDaulton/Hangman-CLI
