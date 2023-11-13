@@ -41,7 +41,18 @@ difficulty with it on your system, please post an issue to:
 https://github.com/SteveDaulton/Hangman-CLI/issues
 
 1. Download the file: [hangman_installer.run](https://github.com/SteveDaulton/Hangman-CLI/releases)
-2. Double-click on the installer to install the game.
+2. Set the permissions to executable.
+   - **GUI method:**
+
+     - Right click on file > Properties
+     - in the 'Permissions' tab, enable:
+     - _"Allow this file to run as a program."_
+
+   - **Command line method:**
+
+     `chmod +x hangman_installer.run`
+
+3. Double-click on the installer to install the game.
 
 The installer will extract the following files:
 * hangman-cli -> `~/.local/bin/hangman-cli`
