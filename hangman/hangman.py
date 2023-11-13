@@ -33,9 +33,43 @@ import sys
 from collections import namedtuple
 from random import randint
 from time import sleep
+from typing import Any, TextIO
 
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
 Puzzle = list[PuzzleLetter]
+
+
+def printi(*objects: Any,
+           sep: str = ' ',
+           end: str = '\n',
+           file: TextIO = sys.stdout,
+           flush: bool = False,
+           spaces: int = 4) -> None:
+    """Print Indented.
+
+    Appends spaces to the beginning of printed lines.
+
+    Parameters
+    ----------
+    objects: Any
+        The printable object
+    sep: str
+        string inserted between values, default: space.
+    end: str
+        Line ending, default: new line
+    file: TextIO
+        File-like object (stream); default: sys.stdout
+    flush: bool
+        Whether to forcibly flush the stream.
+    spaces: int
+        The number of space to prepend, default: 4
+    """
+    # Handle leading new lines.
+    if objects and isinstance(objects[0], str):
+        for _ in range(len(objects[0]) - len(objects[0].lstrip('\n'))):
+            print(file=file)
+    print(end=' ' * spaces)
+    print(*objects, sep=sep, end=end, file=file, flush=flush)
 
 
 def clear_terminal() -> None:
@@ -156,7 +190,10 @@ def word_list() -> list[str]:
     return [word.upper() for word in quiz_words.split()]
 
 
-def print_slowly(message: str, speed: float = 10.0, end: str = '\n') -> None:
+def print_slowly(message: str,
+                 speed: float = 10.0,
+                 end: str = '\n',
+                 indent: bool = True) -> None:
     """Print message one character at a time.
 
     Pauses for 1/speed seconds between characters
@@ -166,7 +203,9 @@ def print_slowly(message: str, speed: float = 10.0, end: str = '\n') -> None:
     message: str
         The message to print
     end: str
-        Line termination.
+        Line termination
+    indent: bool
+        Indent line when True, default: True
 
     speed: int
         How fast to print. Higher = faster
@@ -176,6 +215,9 @@ def print_slowly(message: str, speed: float = 10.0, end: str = '\n') -> None:
     except ZeroDivisionError:
         print("Invalid speed. Defaulting to speed = 4")
         delay = 0.25
+    # Indentation before printing characters.
+    if indent:
+        printi(end='')
     for char in message:
         sleep(delay)
         print(char, end='', flush=True)
@@ -204,17 +246,18 @@ def prompt_confirm(prompt: str) -> bool:
     yes = ('y', 'yes')
     no = ('n', 'no')
     while True:
-        val = input(prompt)
+        printi(prompt, end='')
+        val = input()
         if val in yes:
             return True
         if val in no:
             return False
-        print("Enter 'Y' or 'N'.")
+        printi("Enter 'Y' or 'N'.")
 
 
 def do_quit(player: str) -> None:
     """Exit the program."""
-    print(f"\nBye {player}.")
+    printi(f"\nBye {player}.")
     sys.exit()
 
 
@@ -242,9 +285,9 @@ def play_game(word_to_guess: str) -> bool:
         # Display the result.
         update_screen(game)
         if game.is_good_guess():
-            print(f"{game.current_guess} is correct.")
+            printi(f"{game.current_guess} is correct.")
         else:
-            print(f"{game.current_guess} is wrong.")
+            printi(f"{game.current_guess} is wrong.")
 
         # Return False if hangman complete.
         if game.player_loses():
@@ -344,13 +387,14 @@ def get_guess(game: GameState) -> str:
         The guess - a single character string.
     """
     while True:
-        new_guess = input("Guess a letter: ").strip().upper()
+        printi("Guess a letter: ", end='')
+        new_guess = input().strip().upper()
 
         if len(new_guess) != 1:
-            print("Guesses must be one letter only.")
+            printi("Guesses must be one letter only.")
             continue
         if new_guess in game.guesses:
-            print(f"You've already guessed '{new_guess}'")
+            printi(f"You've already guessed '{new_guess}'")
             continue
         return new_guess
 
@@ -363,8 +407,7 @@ def update_screen(game: GameState, clear: bool = True) -> None:
     print(game.get_image())
     # Print underscores and guessed letters.
     output = [f'{char} ' if val else '_ ' for char, val in game.puzzle]
-    print(''.join(output))
-    print()
+    printi(''.join(output), end='\n\n')
 
 
 def main(player: str) -> None:
@@ -379,8 +422,8 @@ def main(player: str) -> None:
         The name of the player.
     """
     print_slowly(f"OK {player}. Let's play Hangman.")
-    print_slowly("I'll think of a word.""", end=' ')
-    print_slowly('. ' * randint(3, 8), 5)
+    print_slowly("I'll think of a word""", end=' ')
+    print_slowly('. ' * randint(3, 8), speed=5, indent=False)
     clear_terminal()
     word = get_secret_word()
     print_slowly("I've thought of a word.")
@@ -393,16 +436,16 @@ def main(player: str) -> None:
         print_slowly(f"Well done {player}. YOU WIN!", 20)
     else:
         print_slowly(f"Too bad {player}, you loose. "
-                     f"The word was {word}."
-                     f"Better luck next time.", 6)
+                     f"The word was {word}.", 6)
+        print_slowly("Better luck next time.", 6)
 
 
 if __name__ == '__main__':
     clear_terminal()
     print_slowly("Hi there. What's your name?", end=' ')
     name = input()
-    print_slowly(f"Hello {name}.")
-    print_slowly("\nYou can quit at any time by pressing 'Ctrl + C'.\n", 8)
+    print_slowly(f"Hello {name}.", end='\n\n')
+    print_slowly("You can quit at any time by pressing 'Ctrl + C'.\n", 8)
     while True:
         try:
             main(name)
