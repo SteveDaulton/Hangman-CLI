@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p ~/.local/bin
 cp hangman.py ~/.local/bin/hangman-cli
 chmod +x ~/.local/bin/hangman-cli
 
@@ -7,6 +8,7 @@ mkdir -p ~/.local/share/icons
 cp hangman-cli.ico ~/.local/share/icons/
 
 # Create a desktop file
+mkdir -p ~/.local/share/applications
 DESKTOP_FILE=~/.local/share/applications/hangman-cli.desktop
 echo "[Desktop Entry]" > "$DESKTOP_FILE"
 echo "Version=1.0" >> "$DESKTOP_FILE"
