@@ -41,7 +41,7 @@ difficulty with it on your system, please post an issue to:
 https://github.com/SteveDaulton/Hangman-CLI/issues
 
 1. Download the file: [hangman_installer.run](https://github.com/SteveDaulton/Hangman-CLI/releases)
-2. Set the permissions to executable.
+2. Set the file permissions to executable.
    - **GUI method:**
 
      - Right click on file > Properties
