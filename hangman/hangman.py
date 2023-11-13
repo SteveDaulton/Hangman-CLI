@@ -300,45 +300,45 @@ class GameState:
 
     def __init__(self, word: str) -> None:
         """Initialise attributes."""
-        self.__word = word
-        self.__current_guess = ''
-        self.__guesses: set[str] = set()  # All letters guessed so far.
-        self.__remaining: set[str] = set(word)
-        self.__puzzle: Puzzle = [PuzzleLetter(char, False) for char in word]
-        self.__image_idx = 0  # Index of image to display
+        self._word = word
+        self._current_guess = ''
+        self._guesses: set[str] = set()  # All letters guessed so far.
+        self._remaining: set[str] = set(word)
+        self._puzzle: Puzzle = [PuzzleLetter(char, False) for char in word]
+        self._image_idx = 0  # Index of image to display
 
     def update_puzzle(self) -> None:
         """Return updated puzzle.
 
         Add 'True' to each matching tuple and return result.
         """
-        self.__puzzle = [PuzzleLetter(char, val or char == self.current_guess)
-                         for char, val in self.__puzzle]
+        self._puzzle = [PuzzleLetter(char, val or char == self.current_guess)
+                         for char, val in self._puzzle]
 
     @property
     def current_guess(self) -> str:
         """Return the current guess."""
-        return self.__current_guess
+        return self._current_guess
 
     @property
     def remaining_letters(self) -> set[str]:
         """Return set of letters still required."""
-        return self.__remaining
+        return self._remaining
 
     @property
     def guesses(self) -> set[str]:
         """Return set of all guesses tried in this game."""
-        return self.__guesses
+        return self._guesses
 
     @property
     def image_idx(self) -> int:
         """Return image index."""
-        return self.__image_idx
+        return self._image_idx
 
     @property
     def puzzle(self) -> Puzzle:
         """Return puzzle list."""
-        return self.__puzzle
+        return self._puzzle
 
     def update_game_state(self, new_guess: str) -> None:
         """Update game attributes according to current guess.
@@ -352,21 +352,21 @@ class GameState:
         bool
             True if current guess in word.
         """
-        self.__current_guess = new_guess
-        self.__guesses.add(new_guess)
+        self._current_guess = new_guess
+        self._guesses.add(new_guess)
         try:
-            self.__remaining.remove(self.current_guess)
+            self._remaining.remove(self.current_guess)
             self.update_puzzle()
         except KeyError:
-            self.__image_idx += 1  # Not in word
+            self._image_idx += 1  # Not in word
 
     def is_good_guess(self) -> bool:
         """Return True if current guess in puzzle word."""
-        return self.current_guess in self.__word
+        return self.current_guess in self._word
 
     def get_image(self) -> str:
         """Return hangman ascii drawing."""
-        return images()[self.__image_idx]
+        return images()[self._image_idx]
 
     def player_loses(self) -> bool:
         """Return True if player has lost."""
