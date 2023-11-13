@@ -313,7 +313,7 @@ class GameState:
         Add 'True' to each matching tuple and return result.
         """
         self._puzzle = [PuzzleLetter(char, val or char == self.current_guess)
-                         for char, val in self._puzzle]
+                        for char, val in self._puzzle]
 
     @property
     def current_guess(self) -> str:
