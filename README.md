@@ -27,26 +27,32 @@ Your goal is to guess the hidden word, phrase, or sentence chosen by the compute
 
 
 ## Installation Requirements
-Hangman-CLI requires Python 3. This is usually available by default
-in Linux. For other operating systems, it may be obtained from:
-https://www.python.org/downloads/
+Hangman-CLI requires Python version 3.9 or later.
+This is usually available by default in Linux.
+For other operating systems, Python may be downloaded from:
+[Python.org](https://www.python.org/downloads/).
 
-## Where to Download
-The latest version of Hangman-CLI may be downloaded from
-https://github.com/SteveDaulton/Hangman-CLI/releases
+## Where to Download Hangman-CLI
+Latest release (all files):
+[Hangman-CLI Releases](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/).
 
-### Linux installer
+Each release includes:
+- **hangman.py**: The Python application.
+- **hangman_installer.run**: An installer for Linux only.
+- **Source code (zip)**: The source code (ZIP archive).
+- **Source code (tar.gz)**: The source code (tarball),
+
+### Using the Linux installer
 The installer app has been tested on Ubuntu and Debian.If you have any
-difficulty with it on your system, please post an issue to:
-https://github.com/SteveDaulton/Hangman-CLI/issues
+difficulty with it on your system, please post an issue [HERE](https://github.com/SteveDaulton/Hangman-CLI/issues)
 
-1. Download the file: [hangman_installer.run](https://github.com/SteveDaulton/Hangman-CLI/releases)
+1. Download the file:
+[hangman_installer.run](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman_installer.run)
 2. Set the file permissions to executable.
    - **GUI method:**
 
      - Right click on file > Properties
-     - in the 'Permissions' tab, enable:
-     - _"Allow this file to run as a program."_
+     - in the 'Permissions' tab, enable _"Allow this file to run as a program."_
 
    - **Command line method:**
 
@@ -62,15 +68,36 @@ The installer will extract the following files:
 The `hangman-cli.desktop` file should be detected automatically by the
 Desktop menu and create a launcher in the `Games` section.
 
-After installation, the game may be launched either from your Applications menu
+After installation, the game may be launched, either from your Applications menu
 or by entering the command `hangman-cli` in a Terminal window.
 
 ### All Platforms
-The game is also available from [the same location](https://github.com/SteveDaulton/Hangman-CLI/releases) 
-as a single Python file:
-1. Download the file: [hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases)
-2. Open a Terminal, Command Prompt or PowerShell
-3. Navigate to the folder containing `hangman.py`
+If you don't have Linux, or prefer to play the game without installing,
+Hangman-CLI is also available as a single Python file.
+
+#### Windows
+**Preferred Method:**
+1. Download the file: 
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
+2. Double-click on the hangman.py file.
+
+**Alternate Method:**
+1. Download the file: 
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
+2. Open Command Prompt by typing "cmd" in the Start menu.
+3. Use `cd path\to\hangman.py` to navigate to the folder containing `hangman.py`
+4. Launch the game with the command: `py hangman.py`
+
+#### macOS
+1. Download the file: 
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
+2. Drag the `hangman.py` file to **PythonLauncher**.
+
+#### Linux
+1. Download the file: 
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
+2. Open a Terminal window from the Applicatins menu, or "Ctrl + Alt + T".
+3. Use `cd path/to/hangman.py` to navigate to the folder containing `hangman.py`
 4. Launch the game with the command: `python3 hangman.py`
 
 ## License
