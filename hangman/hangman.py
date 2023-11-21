@@ -548,6 +548,11 @@ def new_game(game: Hangman) -> None:
 
     Displays a welcome message to the player, generates a secret word, and
     initiates a game. Prints a win or loose message when game completes.
+
+    Parameters
+    ----------
+    game: Hangman
+        Instance of the game logic class.
     """
     state = game.state
     ui = game.ui
