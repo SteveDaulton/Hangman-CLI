@@ -243,10 +243,10 @@ class UI:
             [self._indent + line for line in str(text).split('\n')])
         return indented
 
-    def display_message(self, message: str) -> None:
+    def display_indented(self, message: str, end: str = '\n') -> None:
         """Display arbitrary text message to player."""
         message = self.indent_text(message)
-        print(message)
+        print(message, end=end)
 
     def do_welcome(self) -> str:
         """Welcome new player.
@@ -302,7 +302,9 @@ class UI:
         sleep(1)
         UI.clear_terminal()
 
-    def display_game_result(self, is_winner: bool, correct_answer: str) -> None:
+    def display_game_result(self,
+                            is_winner: bool,
+                            correct_answer: str) -> None:
         """Congratulate or console player."""
         if is_winner:
             self.print_slowly(f"Well done {self.game_state.player_name}. "
@@ -332,9 +334,8 @@ class UI:
         """
         yes = ('y', 'yes')
         no = ('n', 'no')
-        prompt = self.indent_text(prompt)
         while True:
-            print(prompt, end='')
+            self.display_indented(prompt, end='')
             val = input()
             if val in yes:
                 return True
@@ -347,11 +348,11 @@ class UI:
         if clear:
             UI.clear_terminal()
         # Print hangman image.
-        print(self.indent_text(self.get_image()))
+        self.display_indented(self.get_image())
         # Print underscores and guessed letters.
         output = [f'{char} ' if val else '_ ' for
                   char, val in self.game_state.puzzle]
-        print(self.indent_text(f'{"".join(output)}\n\n'))
+        self.display_indented(f'{"".join(output)}\n\n')
 
     @staticmethod
     def clear_terminal() -> None:
@@ -384,7 +385,7 @@ class UI:
         try:
             delay = abs(1 / speed)
         except ZeroDivisionError:
-            print(self.indent_text("Invalid speed. Defaulting to speed = 4"))
+            self.display_indented("Invalid speed. Defaulting to speed = 4")
             delay = 0.25
         for line in message.split('\n'):
             if indent:
@@ -396,8 +397,7 @@ class UI:
 
     def display_exit_dialog(self) -> None:
         """Dialog before quitting."""
-        print(self.indent_text(f"\nBye {self.game_state.player_name}."),
-              flush=True)
+        self.display_indented(f"\nBye {self.game_state.player_name}.")
 
 
 class Hangman:
@@ -505,9 +505,9 @@ def play_game(game: Hangman) -> bool:
         # Display the result.
         game.ui.update_screen()
         if game.is_good_guess():
-            game.ui.display_message(f"{game.state.current_guess} is correct.")
+            game.ui.display_indented(f"{game.state.current_guess} is correct.")
         else:
-            game.ui.display_message(f"{game.state.current_guess} is wrong.")
+            game.ui.display_indented(f"{game.state.current_guess} is wrong.")
 
         # Return False if hangman complete.
         if game.player_loses():
