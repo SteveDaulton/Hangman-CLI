@@ -517,6 +517,8 @@ def play_game(game: Hangman) -> bool:
 
     Parameters
     ----------
+    game: Hangman
+        Instance of the game logic class.
 
     Returns
     -------
