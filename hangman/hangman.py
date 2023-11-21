@@ -36,7 +36,16 @@ from random import randint
 from time import sleep
 
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
+"""Type definition for a namedtuple('character', 'guessed').
+
+character: str
+    One of the characters from the mystery word.
+guessed: bool
+    True if the letter has been guessed, else False.
+"""
+
 Puzzle = list[PuzzleLetter]
+"""Type definition for a list of PuzzleLetter's."""
 
 
 def images() -> tuple[str, ...]:
@@ -222,6 +231,50 @@ class GameState:
     puzzle: Puzzle = field(default_factory=list)
     image_idx: int = 0
 
+    def initialise_game_state(self, ) -> None:
+        """Post-instantiation initialisation.
+
+        Complete the initialisation of GameState after
+        puzzle_word has been set.
+        """
+        self.remaining_letters = set(self.word)
+        self.puzzle = [PuzzleLetter(char, False) for char in self.word]
+
+    def update_state_on_guess(self) -> None:
+        """Update the game state based on the current guess.
+
+        Tries to remove the guessed letter from the remaining_letters set.
+        If the letter is not in the word, increment the image index.
+        """
+        try:
+            self.remaining_letters.remove(self.current_guess)
+            self.update_puzzle()
+        except KeyError:
+            self.image_idx += 1  # Not in word
+
+    def update_puzzle(self) -> None:
+        """Return updated puzzle.
+
+        Called by update_game_state to handle updating the puzzle data.
+        Add 'True' to each matching tuple and return result.
+        """
+        self.puzzle = [
+            PuzzleLetter(char, val or (char == self.current_guess))
+            for char, val in self.puzzle]
+
+    def reset_current_game(self) -> None:
+        """Reset current game settings.
+
+        Does not reset entire session as some game settings,
+        such as _player_name, need to persist across multiple games.
+        """
+        self.word = ''
+        self.current_guess = ''
+        self.guesses = set()
+        self.remaining_letters = set()
+        self.puzzle = []
+        self.image_idx = 0
+
 
 class UI:
     """User interface class."""
@@ -243,8 +296,12 @@ class UI:
             [self._indent + line for line in str(text).split('\n')])
         return indented
 
-    def display_indented(self, message: str, end: str = '\n') -> None:
-        """Display arbitrary text message to player."""
+    def display_message(self, message: str, end: str = '\n') -> None:
+        """Display arbitrary text message to player.
+
+        In the CLI interface, text is indented for an improved
+        aesthetic appearance.
+        """
         message = self.indent_text(message)
         print(message, end=end)
 
@@ -312,8 +369,8 @@ class UI:
         else:
             self.print_slowly(
                 f"Too bad {self.game_state.player_name}, you loose. "
-                f"The word was {correct_answer}."
-                "Better luck next time.", 6)
+                f"The word was {correct_answer}.")
+            self.print_slowly("Better luck next time.", 6)
 
     def get_image(self) -> str:
         """Return hangman ascii drawing."""
@@ -335,7 +392,7 @@ class UI:
         yes = ('y', 'yes')
         no = ('n', 'no')
         while True:
-            self.display_indented(prompt, end='')
+            self.display_message(prompt, end='')
             val = input()
             if val in yes:
                 return True
@@ -348,11 +405,11 @@ class UI:
         if clear:
             UI.clear_terminal()
         # Print hangman image.
-        self.display_indented(self.get_image())
+        self.display_message(self.get_image())
         # Print underscores and guessed letters.
         output = [f'{char} ' if val else '_ ' for
                   char, val in self.game_state.puzzle]
-        self.display_indented(f'{"".join(output)}\n\n')
+        self.display_message(f'{"".join(output)}\n\n')
 
     @staticmethod
     def clear_terminal() -> None:
@@ -385,7 +442,7 @@ class UI:
         try:
             delay = abs(1 / speed)
         except ZeroDivisionError:
-            self.display_indented("Invalid speed. Defaulting to speed = 4")
+            self.display_message("Invalid speed. Defaulting to speed = 4")
             delay = 0.25
         for line in message.split('\n'):
             if indent:
@@ -397,7 +454,7 @@ class UI:
 
     def display_exit_dialog(self) -> None:
         """Dialog before quitting."""
-        self.display_indented(f"\nBye {self.game_state.player_name}.")
+        self.display_message(f"\nBye {self.game_state.player_name}.")
 
 
 class Hangman:
@@ -421,51 +478,20 @@ class Hangman:
         Complete the initialisation from puzzle_word.
         """
         self.state.word = puzzle_word
-        self.state.remaining_letters = set(puzzle_word)
-        self.state.puzzle = [PuzzleLetter(char, False) for char in puzzle_word]
-
-    def reset_current_game(self) -> None:
-        """Reset current game settings.
-
-        Does not reset entire session as some game settings,
-        such as _player_name, need to persist across multiple games.
-        """
-        self.state.word = ''
-        self.state.current_guess = ''
-        self.state.guesses = set()
-        self.state.remaining_letters = set()
-        self.state.puzzle = []
-        self.state.image_idx = 0
+        self.state.initialise_game_state()
 
     def update_game_state(self, new_guess: str) -> None:
         """Update game attributes according to current guess.
 
         If current_guess is in word, update game state.
-        - update_puzzle()
-        - List of remaining letters in word.
+        - update GameState::current_guess
+        - update GameState::guesses
 
-        Returns
-        _______
-        bool
-            True if current guess in word.
+        Then tell GameState() instance to manage its own update,
         """
         self.state.current_guess = new_guess
         self.state.guesses.add(new_guess)
-        try:
-            self.state.remaining_letters.remove(self.state.current_guess)
-            self.update_puzzle()
-        except KeyError:
-            self.state.image_idx += 1  # Not in word
-
-    def update_puzzle(self) -> None:
-        """Return updated puzzle.
-
-        Called by update_game_state to handle updating the puzzle data.
-        Add 'True' to each matching tuple and return result.
-        """
-        self.state.puzzle = [
-            PuzzleLetter(char, val or (char == self.state.current_guess))
-            for char, val in self.state.puzzle]
+        self.state.update_state_on_guess()
 
     def is_good_guess(self) -> bool:
         """Return True if current guess in puzzle word."""
@@ -505,9 +531,9 @@ def play_game(game: Hangman) -> bool:
         # Display the result.
         game.ui.update_screen()
         if game.is_good_guess():
-            game.ui.display_indented(f"{game.state.current_guess} is correct.")
+            game.ui.display_message(f"{game.state.current_guess} is correct.")
         else:
-            game.ui.display_indented(f"{game.state.current_guess} is wrong.")
+            game.ui.display_message(f"{game.state.current_guess} is wrong.")
 
         # Return False if hangman complete.
         if game.player_loses():
@@ -546,7 +572,7 @@ def new_game(game: Hangman) -> None:
     ui.display_game_result(player_wins, state.word)
 
     # Reset for next game.
-    game.reset_current_game()
+    state.reset_current_game()
 
 
 def main():
