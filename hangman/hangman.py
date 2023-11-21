@@ -31,6 +31,7 @@ Good luck and have fun playing Hangman!
 import os
 import sys
 from collections import namedtuple
+from dataclasses import dataclass, field
 from random import randint
 from time import sleep
 
@@ -192,126 +193,34 @@ def get_secret_word() -> str:
     raise RuntimeError("Unable to return secret word.")
 
 
-class GameState:  # pylint: disable=too-many-instance-attributes
+@dataclass
+class GameState:
     """Manage state for the game.
 
-    Provides getters and setters for current game state,
-    update_game_state() with new guess.
+    Attributes
+    ----------
+    player_name : str
+        The player's name.
+    word : str
+        The mystery word.
+    current_guess : str
+        The current guess.
+    guesses : set
+        The set of all guesses tried in this game.
+    remaining_letters : set
+        The set of letters still required.
+    puzzle : list
+        Puzzle list.
+    image_idx : int
+        Index of the image to display.
     """
-
-    def __init__(self) -> None:
-        """Initialise attributes.
-        """
-        self._player_name: str = ''
-        self._word: str = ''
-        self._current_guess: str = ''
-        self._guesses: set[str] = set()  # All letters guessed so far.
-        self._remaining: set[str] = set()
-        self._puzzle: Puzzle = []
-        self._image_idx: int = 0  # Index of image to display
-
-    def reset_current_game(self) -> None:
-        """Reset current game settings.
-
-        Some game settings, such as _player_name, need to persist
-        across multiple games.
-        """
-        self._word = ''
-        self._current_guess = ''
-        self._guesses = set()
-        self._remaining = set()
-        self._puzzle = []
-        self._image_idx = 0
-
-    @property
-    def player_name(self):
-        """Return the player's name."""
-        return self._player_name
-
-    # Setter method
-    @player_name.setter
-    def player_name(self, val):
-        self._player_name = val
-
-    @property
-    def word(self):
-        """Return mystery word."""
-        return self._word
-
-    @word.setter
-    def word(self, val):
-        self._word = val
-
-    @property
-    def current_guess(self) -> str:
-        """Return the current guess."""
-        return self._current_guess
-
-    @property
-    def remaining_letters(self) -> set[str]:
-        """Return set of letters still required."""
-        return self._remaining
-
-    def initialise_game(self, puzzle_word: str) -> None:
-        """Add characters of word to _remaining set."""
-        self.word = puzzle_word
-        self._remaining = set(puzzle_word)
-        self._puzzle = [PuzzleLetter(char, False) for char in puzzle_word]
-
-    @property
-    def guesses(self) -> set[str]:
-        """Return set of all guesses tried in this game."""
-        return self._guesses
-
-    @property
-    def image_idx(self) -> int:
-        """Return image index."""
-        return self._image_idx
-
-    @property
-    def puzzle(self) -> Puzzle:
-        """Return puzzle list."""
-        return self._puzzle
-
-    def update_puzzle(self) -> None:
-        """Return updated puzzle.
-
-        Add 'True' to each matching tuple and return result.
-        """
-        self._puzzle = [PuzzleLetter(char, val or char == self.current_guess)
-                        for char, val in self._puzzle]
-
-    def update_game_state(self, new_guess: str) -> None:
-        """Update game attributes according to current guess.
-
-        If current_guess is in word, update game state.
-        - update_puzzle()
-        - List of remaining letters in word.
-
-        Returns
-        _______
-        bool
-            True if current guess in word.
-        """
-        self._current_guess = new_guess
-        self._guesses.add(new_guess)
-        try:
-            self._remaining.remove(self.current_guess)
-            self.update_puzzle()
-        except KeyError:
-            self._image_idx += 1  # Not in word
-
-    def is_good_guess(self) -> bool:
-        """Return True if current guess in puzzle word."""
-        return self.current_guess in self._word
-
-    def get_image(self) -> str:
-        """Return hangman ascii drawing."""
-        return images()[self._image_idx]
-
-    def player_loses(self) -> bool:
-        """Return True if player has lost."""
-        return self.image_idx == len(images()) - 1
+    player_name: str = ''
+    word: str = ''
+    current_guess: str = ''
+    guesses: set[str] = field(default_factory=set)
+    remaining_letters: set[str] = field(default_factory=set)
+    puzzle: Puzzle = field(default_factory=list)
+    image_idx: int = 0
 
 
 class UI:
@@ -328,10 +237,6 @@ class UI:
         self.game_state = game_state
         self._indent = ' ' * 4
 
-    def reset_game(self) -> None:
-        """Reset GameState parameters that refer to current game."""
-        self.game_state.reset_current_game()
-
     def indent_text(self, text: str):
         """Indent each printed line."""
         indented = '\n'.join(
@@ -343,15 +248,14 @@ class UI:
         message = self.indent_text(message)
         print(message)
 
-    def do_welcome(self) -> None:
+    def do_welcome(self) -> str:
         """Welcome new player.
 
-        Get player's name, print welcome message and
-        return player's name.
+        Get player's name, print welcome message and return player's name.
 
-         Returns
-         -------
-         str
+        Returns
+        -------
+        str
             The player's name.
         """
         UI.clear_terminal()
@@ -360,7 +264,7 @@ class UI:
         self.print_slowly(f"Hello {player_name}.", end='\n')
         self.print_slowly(
             "You can quit at any time by pressing 'Ctrl + C'.", 8)
-        self.game_state.player_name = player_name
+        return player_name
 
     def print_intro(self) -> None:
         """Print introduction to game.
@@ -370,14 +274,8 @@ class UI:
         self.print_slowly(' .' * randint(3, 8), speed=5, indent=False)
         UI.clear_terminal()
 
-    @staticmethod
-    def get_guess(game: GameState) -> str:
+    def get_guess(self) -> str:
         """Return a new guess.
-
-        Parameters
-        ----------
-        game: GameState
-            The current game state.
 
         Returns
         -------
@@ -391,12 +289,12 @@ class UI:
             if len(new_guess) != 1:
                 print("Guesses must be one letter only.")
                 continue
-            if new_guess in game.guesses:
+            if new_guess in self.game_state.guesses:
                 print(f"You've already guessed '{new_guess}'")
                 continue
             return new_guess
 
-    def print_game_start(self) -> None:
+    def display_game_start_screen(self) -> None:
         """Inform user of word length."""
         self.print_slowly(
             "I've thought of a word.\n"
@@ -404,7 +302,7 @@ class UI:
         sleep(1)
         UI.clear_terminal()
 
-    def print_game_result(self, is_winner: bool, correct_answer: str) -> None:
+    def display_game_result(self, is_winner: bool, correct_answer: str) -> None:
         """Congratulate or console player."""
         if is_winner:
             self.print_slowly(f"Well done {self.game_state.player_name}. "
@@ -415,8 +313,11 @@ class UI:
                 f"The word was {correct_answer}."
                 "Better luck next time.", 6)
 
-    @staticmethod
-    def prompt_confirm(prompt: str) -> bool:
+    def get_image(self) -> str:
+        """Return hangman ascii drawing."""
+        return images()[self.game_state.image_idx]
+
+    def prompt_confirm(self, prompt: str) -> bool:
         """Prompt for yes/no answer.
 
         Parameters
@@ -431,6 +332,7 @@ class UI:
         """
         yes = ('y', 'yes')
         no = ('n', 'no')
+        prompt = self.indent_text(prompt)
         while True:
             print(prompt, end='')
             val = input()
@@ -445,17 +347,11 @@ class UI:
         if clear:
             UI.clear_terminal()
         # Print hangman image.
-        print(self.indent_text(self.game_state.get_image()))
+        print(self.indent_text(self.get_image()))
         # Print underscores and guessed letters.
         output = [f'{char} ' if val else '_ ' for
                   char, val in self.game_state.puzzle]
         print(self.indent_text(f'{"".join(output)}\n\n'))
-
-    def do_quit(self) -> None:
-        """Exit the program."""
-        print(self.indent_text(f"\nBye {self.game_state.player_name}."),
-              flush=True)
-        sys.exit()
 
     @staticmethod
     def clear_terminal() -> None:
@@ -498,8 +394,97 @@ class UI:
                 print(char, flush=True, end='')
             print(end=end)
 
+    def display_exit_dialog(self) -> None:
+        """Dialog before quitting."""
+        print(self.indent_text(f"\nBye {self.game_state.player_name}."),
+              flush=True)
 
-def play_game(ui: UI) -> bool:
+
+class Hangman:
+    """Game logic class.
+
+    Attributes
+    ----------
+    self.state: GameState
+        Game state manager.
+    self.ui: UI
+        User interface.
+    """
+    def __init__(self) -> None:
+        """Constructor of game logic class."""
+        self.state = GameState()
+        self.ui = UI(self.state)
+
+    def initialise_game(self, puzzle_word: str) -> None:
+        """Post-instantiation initialisation.
+
+        Complete the initialisation from puzzle_word.
+        """
+        self.state.word = puzzle_word
+        self.state.remaining_letters = set(puzzle_word)
+        self.state.puzzle = [PuzzleLetter(char, False) for char in puzzle_word]
+
+    def reset_current_game(self) -> None:
+        """Reset current game settings.
+
+        Does not reset entire session as some game settings,
+        such as _player_name, need to persist across multiple games.
+        """
+        self.state.word = ''
+        self.state.current_guess = ''
+        self.state.guesses = set()
+        self.state.remaining_letters = set()
+        self.state.puzzle = []
+        self.state.image_idx = 0
+
+    def update_game_state(self, new_guess: str) -> None:
+        """Update game attributes according to current guess.
+
+        If current_guess is in word, update game state.
+        - update_puzzle()
+        - List of remaining letters in word.
+
+        Returns
+        _______
+        bool
+            True if current guess in word.
+        """
+        self.state.current_guess = new_guess
+        self.state.guesses.add(new_guess)
+        try:
+            self.state.remaining_letters.remove(self.state.current_guess)
+            self.update_puzzle()
+        except KeyError:
+            self.state.image_idx += 1  # Not in word
+
+    def update_puzzle(self) -> None:
+        """Return updated puzzle.
+
+        Called by update_game_state to handle updating the puzzle data.
+        Add 'True' to each matching tuple and return result.
+        """
+        self.state.puzzle = [
+            PuzzleLetter(char, val or (char == self.state.current_guess))
+            for char, val in self.state.puzzle]
+
+    def is_good_guess(self) -> bool:
+        """Return True if current guess in puzzle word."""
+        return self.state.current_guess in self.state.word
+
+    def player_loses(self) -> bool:
+        """Return True if player has lost.
+
+        Game is lost when final hangman image is displayed.
+        """
+        return self.state.image_idx == len(images()) - 1
+
+    def do_quit(self) -> None:
+        """Exit the program."""
+        self.ui.display_exit_dialog()
+        sys.exit()
+
+
+def play_game(game: Hangman) -> bool:
     """Play game.
 
     Main game loop.
@@ -512,18 +497,17 @@ def play_game(ui: UI) -> bool:
     bool:
         True if player wins, else False.
     """
-    game = ui.game_state
-    ui.update_screen(clear=False)
+    game.ui.update_screen(clear=False)
 
-    while game.remaining_letters:
+    while game.state.remaining_letters:
         # Update the game state from player guess.
-        game.update_game_state(ui.get_guess(game))
+        game.update_game_state(game.ui.get_guess())
         # Display the result.
-        ui.update_screen()
+        game.ui.update_screen()
         if game.is_good_guess():
-            ui.display_message(f"{game.current_guess} is correct.")
+            game.ui.display_message(f"{game.state.current_guess} is correct.")
         else:
-            ui.display_message(f"{game.current_guess} is wrong.")
+            game.ui.display_message(f"{game.state.current_guess} is wrong.")
 
         # Return False if hangman complete.
         if game.player_loses():
@@ -531,47 +515,56 @@ def play_game(ui: UI) -> bool:
     return True
 
 
-def game_session(ui: UI) -> None:
-    """Start the Hangman game for the named player.
+def new_game(game: Hangman) -> None:
+    """A single complete game.
 
     Displays a welcome message to the player, generates a secret word, and
-    initiates the game loop. Prints a win or loose message when game completes.
+    initiates a game. Prints a win or loose message when game completes.
     """
-    if ui.game_state.player_name == '':
-        ui.do_welcome()
+    state = game.state
+    ui = game.ui
+
+    # player_name initialised only in first game.
+    if state.player_name == '':
+        state.player_name = ui.do_welcome()
+
     ui.print_intro()
-    game_state = ui.game_state
 
     try:
         secret_word = get_secret_word()
-        game_state.initialise_game(secret_word)
     except RuntimeError as exc:
         print(f"Sorry, there has been an error: {exc}")
         sys.exit()
-    ui.print_game_start()
+    # Now that we have player_name and secret_word
+    # we can complete initialisation of GameState.
+    game.initialise_game(secret_word)
+
+    ui.display_game_start_screen()
+
     # Play game and get result
-    player_wins = play_game(ui)
-    ui.print_game_result(player_wins, game_state.word)
-    ui.reset_game()
+    player_wins = play_game(game)
+    ui.display_game_result(player_wins, state.word)
+
+    # Reset for next game.
+    game.reset_current_game()
 
 
 def main():
     """Main loop.
 
-    Instantiate an instance of GameState(), which will persist for
-    life of program. A new user interface UI() object is created
-    for each game. Play game repeatedly until player quits.
+    Instantiate an instance of Hangman game, which will
+    persist for the life of program.
+    Play game repeatedly until player quits.
     """
-    state = GameState()
+    new_game_session = Hangman()
     while True:
-        ui = UI(state)
         try:
-            game_session(ui)
+            new_game(new_game_session)
         except KeyboardInterrupt:
-            ui.do_quit()
-        if ui.prompt_confirm("Play again? [y/n] "):
+            new_game_session.do_quit()
+        if new_game_session.ui.prompt_confirm("Play again? [y/n] "):
             continue
-        ui.do_quit()
+        new_game_session.do_quit()
 
 
 if __name__ == '__main__':
