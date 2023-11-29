@@ -11,7 +11,7 @@ cp hangman-cli.ico ~/.local/share/icons/
 mkdir -p ~/.local/share/applications
 DESKTOP_FILE=~/.local/share/applications/hangman-cli.desktop
 echo "[Desktop Entry]" > "$DESKTOP_FILE"
-echo "Version=1.0" >> "$DESKTOP_FILE"
+echo "Version=1.2.0" >> "$DESKTOP_FILE"
 echo "Type=Application" >> "$DESKTOP_FILE"
 echo "Name=Hangman-CLI" >> "$DESKTOP_FILE"
 echo "GenericName=Hangman" >> "$DESKTOP_FILE"
