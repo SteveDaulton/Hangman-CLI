@@ -210,6 +210,8 @@ class GameState:
     ----------
     player_name : str
         The player's name.
+    score : dict[str, int]
+        Game wins and losses.
     word : str
         The mystery word.
     current_guess : str
@@ -223,7 +225,9 @@ class GameState:
     image_idx : int
         Index of the image to display.
     """
+    # pylint: disable=too-many-instance-attributes
     player_name: str = ''
+    score: dict[str, int] = field(default_factory=dict)
     word: str = ''
     current_guess: str = ''
     guesses: set[str] = field(default_factory=set)
@@ -231,7 +235,7 @@ class GameState:
     puzzle: Puzzle = field(default_factory=list)
     image_idx: int = 0
 
-    def initialise_game_state(self, ) -> None:
+    def initialise_game_state(self) -> None:
         """Post-instantiation initialisation.
 
         Complete the initialisation of GameState after
@@ -318,9 +322,10 @@ class UI:
         UI.clear_terminal()
         self.print_slowly("Hi there. What's your name?", end=' ')
         player_name = input().title()
-        self.print_slowly(f"Hello {player_name}.", end='\n')
+        self.print_slowly(f"Hello {player_name}.", end='\n\n')
         self.print_slowly(
-            "You can quit at any time by pressing 'Ctrl + C'.", 8)
+            "You can quit at any time by pressing 'Ctrl + C'.",
+            speed=8, end='\n\n')
         return player_name
 
     def print_intro(self) -> None:
@@ -363,6 +368,11 @@ class UI:
                             is_winner: bool,
                             correct_answer: str) -> None:
         """Congratulate or console player."""
+        self.clear_terminal()
+        # Print score
+        wins, losses = self.game_state.score.values()
+        self.display_message(f"Won: {wins}  Lost: {losses}\n")
+
         if is_winner:
             self.print_slowly(f"Well done {self.game_state.player_name}. "
                               f"YOU WIN!", 20)
@@ -395,8 +405,10 @@ class UI:
             self.display_message(prompt, end='')
             val = input()
             if val in yes:
+                self.clear_terminal()
                 return True
             if val in no:
+                self.clear_terminal()
                 return False
             print("Enter 'Y' or 'N'.")
 
@@ -404,6 +416,9 @@ class UI:
         """Refresh screen with current game state."""
         if clear:
             UI.clear_terminal()
+        # Print score
+        wins, losses = self.game_state.score.values()
+        self.display_message(f"Won: {wins}  Lost: {losses}")
         # Print hangman image.
         self.display_message(self.get_image())
         # Print underscores and guessed letters.
@@ -471,6 +486,8 @@ class Hangman:
         """Constructor of game logic class."""
         self.state = GameState()
         self.ui = UI(self.state)
+        self.wins: int = 0
+        self.losses: int = 0
 
     def initialise_game(self, puzzle_word: str) -> None:
         """Post-instantiation initialisation.
@@ -496,6 +513,14 @@ class Hangman:
     def is_good_guess(self) -> bool:
         """Return True if current guess in puzzle word."""
         return self.state.current_guess in self.state.word
+
+    def player_wins(self) -> None:
+        """Handle player winning.
+
+        Game is won when word is guessed before final
+        hangman image is displayed.
+        """
+        self.state.score['wins'] += 1
 
     def player_loses(self) -> bool:
         """Return True if player has lost.
@@ -539,7 +564,11 @@ def play_game(game: Hangman) -> bool:
 
         # Return False if hangman complete.
         if game.player_loses():
+            game.losses += 1
+            game.state.score['losses'] = game.losses
             return False
+    game.wins += 1
+    game.state.score['wins'] = game.wins
     return True
 
 
@@ -555,6 +584,7 @@ def new_game(game: Hangman) -> None:
         Instance of the game logic class.
     """
     state = game.state
+    state.score = {'wins': game.wins, 'losses': game.losses}
     ui = game.ui
 
     # player_name initialised only in first game.
