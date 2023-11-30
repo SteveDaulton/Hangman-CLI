@@ -35,6 +35,10 @@ from dataclasses import dataclass, field
 from random import randint
 from time import sleep
 
+from ascii_art import ascii_images as art
+from lexicon import get_word_list
+
+
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
 """Type definition for a namedtuple('character', 'guessed').
 
@@ -46,148 +50,6 @@ guessed: bool
 
 Puzzle = list[PuzzleLetter]
 """Type definition for a list of PuzzleLetter's."""
-
-
-def images() -> tuple[str, ...]:
-    """Return a tuple of hangman (ascii) drawings."""
-    return (
-        r"""
-
-
-
-
-
-
-=====""",
-
-        r"""
-    +
-    |
-    |
-    |
-    |
-    |
-=====""",
-
-        r"""
- +--+
-    |
-    |
-    |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
-    |
-    |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
-    |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
- |  |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
-/|  |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
-/|\ |
-    |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
-/|\ |
-/   |
-    |
-=====""",
-
-        r"""
- +--+
- |  |
- O  |
-/|\ |
-/ \ |
-    |
-====="""
-    )
-
-
-def get_word_list(category: str = 'animals') -> list[str]:
-    """Return a list of quiz words.
-
-    Define your list of words here.
-    Words must be separated by white-space only.
-    Each word list must have a unique name, and have an
-    entry in the word_list_dict.
-
-    Parameters
-    ----------
-    category: str
-        Types of words, default: "animals"
-
-    Returns
-    -------
-    list[str]
-        List of words of selected category
-
-    Raises
-    ------
-    ValueError
-        If 'category' invalid.
-    """
-
-    category = category.lower()
-
-    animal_words = """
-    Dog Cat Elephant Lion Tiger Giraffe Zebra Bear Koala
-    Panda Kangaroo Penguin Dolphin Eagle Owl Fox Wolf Cheetah
-    Leopard Jaguar Horse Cow Pig Sheep Goat Chicken Duck Goose
-    Swan Octopus Shark Whale Platypus Chimpanzee Gorilla Orangutan
-    Baboon Raccoon Squirrel Bat Hedgehog Armadillo Sloth Porcupine
-    Anteater Camel Dingo Kangaroo Rat Lemur Meerkat Ocelot Parrot
-    Quokka Vulture Wombat Yak Iguana jaguar Kakapo Lemming
-    Manatee Nutria Ostrich Pangolin Quail Rhinoceros Serval
-    Wallaby Coypu Tapir Pheasant
-    """
-
-    word_list_dict = {'animals': animal_words}
-
-    try:
-        words: str = word_list_dict[category]
-        return [word.upper() for word in words.split()]
-    except KeyError as exc:
-        raise ValueError("Invalid category.") from exc
 
 
 def get_secret_word() -> str:
@@ -384,7 +246,7 @@ class UI:
 
     def get_image(self) -> str:
         """Return hangman ascii drawing."""
-        return images()[self.game_state.image_idx]
+        return art()[self.game_state.image_idx]
 
     def prompt_confirm(self, prompt: str) -> bool:
         """Prompt for yes/no answer.
@@ -527,11 +389,12 @@ class Hangman:
 
         Game is lost when final hangman image is displayed.
         """
-        return self.state.image_idx == len(images()) - 1
+        return self.state.image_idx == len(art()) - 1
 
     def do_quit(self) -> None:
         """Exit the program."""
         self.ui.display_exit_dialog()
+        sleep(2)
         sys.exit()
 
 
