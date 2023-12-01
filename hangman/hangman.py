@@ -36,8 +36,7 @@ from random import randint
 from time import sleep
 
 from ascii_art import ascii_images as art
-from lexicon import get_word_list
-
+from lexicon import get_word_list, get_categories
 
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
 """Type definition for a namedtuple('character', 'guessed').
@@ -52,10 +51,10 @@ Puzzle = list[PuzzleLetter]
 """Type definition for a list of PuzzleLetter's."""
 
 
-def get_secret_word() -> str:
+def get_secret_word(category: str) -> str:
     """Return a random word from multiple options."""
     try:
-        words: list[str] = get_word_list()
+        words: list[str] = get_word_list(category)
     except ValueError as exc:
         raise RuntimeError("Unable to retrieve word list.") from exc
     secret_word = words[randint(0, len(words) - 1)]
@@ -90,6 +89,7 @@ class GameState:
     # pylint: disable=too-many-instance-attributes
     player_name: str = ''
     score: dict[str, int] = field(default_factory=dict)
+    category: str = ''
     word: str = ''
     current_guess: str = ''
     guesses: set[str] = field(default_factory=set)
@@ -189,6 +189,27 @@ class UI:
             "You can quit at any time by pressing 'Ctrl + C'.",
             speed=8, end='\n\n')
         return player_name
+
+    def prompt_category(self, categories: tuple) -> str:
+        """Prompt user to select a category.
+
+        Returns
+        -------
+        str
+            The name of the selected category.
+        """
+        self.display_message("Select one of these categories:")
+        for idx, cat in enumerate(categories):
+            self.display_message(f"{idx}. {cat}")
+        while True:
+            category = input("Enter a number: ")
+            try:
+                category = categories[int(category)]
+            except (ValueError, IndexError):
+                self.display_message(f"{category} is not an option.")
+                self.display_message("Please try again.")
+            else:
+                return category
 
     def print_intro(self) -> None:
         """Print introduction to game.
@@ -454,10 +475,12 @@ def new_game(game: Hangman) -> None:
     if state.player_name == '':
         state.player_name = ui.do_welcome()
 
+    state.category = ui.prompt_category(get_categories())
+
     ui.print_intro()
 
     try:
-        secret_word = get_secret_word()
+        secret_word = get_secret_word(state.category)
     except RuntimeError as exc:
         print(f"Sorry, there has been an error: {exc}")
         sys.exit()
