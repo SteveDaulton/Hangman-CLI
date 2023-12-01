@@ -50,11 +50,12 @@ _WORD_LISTS = {
     Oak Maple Pine Cedar Birch Spruce Ash Elm Cherry Willow Beech Fir Poplar
     Sycamore Redwood Sequoia Cypress Mahogany Chestnut Aspen Douglasfir Larch
     Hemlock Eucalyptus Gingko Alder Cottonwood Yew Walnut Boxelder Apple Pear
-    Plum Lemon Orange Olive Almond Pecan Hickory Mulberry Avocado Persimmon Fig
-    Dogwood Banyan Tuliptree Hazelnut Kauri Baobab Palm Rowan Blackthorn Serviceberry
-    Crabapple Hornbeam Catalpa Hawthorn Maple Pineapple Guava Birch Avocado Pecan
-    Hickory Mulberry Persimmon Dogwood Banyan Tuliptree Hazelnut Kauri Baobab
-    Palm Rowan Blackthorn Serviceberry Crabapple Hornbeam Catalpa Hawthorn
+    Plum Lemon Orange Olive Almond Pecan Hickory Mulberry Avocado Persimmon
+    Fig Dogwood Banyan Tuliptree Hazelnut Kauri Baobab Palm Rowan Blackthorn
+    Serviceberry Crabapple Hornbeam Catalpa Hawthorn Maple Pineapple Guava
+    Birch Avocado Pecan Hickory Mulberry Persimmon Dogwood Banyan Tuliptree
+    Hazelnut Kauri Baobab Palm Rowan Blackthorn Serviceberry Crabapple
+    Hornbeam Catalpa Hawthorn
     """
 }
 
