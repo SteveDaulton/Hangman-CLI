@@ -42,24 +42,24 @@ def get_word_list(category: str = 'animals') -> list[str]:
     dinosaur_words = """
     Tyrannosaurus Velociraptor Triceratops
     Stegosaurus Brachiosaurus Spinosaurus Pterodactyl Allosaurus
-    Diplodocus Ankylosaurus Parasaurolophus Brontosaurus Apatosaurus 
-    Iguanodon Pachycephalosaurus Carnotaurus Deinonychus Archaeopteryx 
-    Dilophosaurus Edmontosaurus Giganotosaurus Oviraptor Troodon 
-    Baryonyx Corythosaurus Compsognathus Maiasaura Euoplocephalus 
-    Protoceratops Gallimimus Plateosaurus Sauropelta Coelophysis 
-    Stegoceras Suchomimus Heterodontosaurus Microraptor Therizinosaurus 
-    Micropachycephalosaurus Nodosaurus Ouranosaurus Quetzalcoatlus 
-    Shunosaurus Sinornithosaurus Styracosaurus Tsintaosaurus 
-    Yangchuanosaurus Zalmoxes Amargasaurus Camarasaurus Dryosaurus 
-    Einiosaurus Europasaurus Fukuiraptor Gasosaurus Hadrosaurus 
-    Hypsilophodon Jobaria Kentrosaurus Lambeosaurus Leaellynasaura 
-    Leptoceratops Lophorhothon Magyarosaurus Megalosaurus Minmi 
-    Monolophosaurus Nqwebasaurus Nipponosaurus Ornithomimus 
-    Pachyrhinosaurus Pentaceratops Psittacosaurus Saurolophus Segisaurus 
-    Siamosaurus Sordes Struthiomimus Talarurus Thescelosaurus Torosaurus 
-    Tsintaosaurus Tyrannotitan Utahraptor Wuerhosaurus Xenoceratops 
-    Yandusaurus Yimenosaurus Zuniceratops Einiosaurus Sinosauropteryx 
-    Iberomesornis Dacentrurus Beipiaosaurus Prenocephale Dromaeosaurus 
+    Diplodocus Ankylosaurus Parasaurolophus Brontosaurus Apatosaurus
+    Iguanodon Pachycephalosaurus Carnotaurus Deinonychus Archaeopteryx
+    Dilophosaurus Edmontosaurus Giganotosaurus Oviraptor Troodon
+    Baryonyx Corythosaurus Compsognathus Maiasaura Euoplocephalus
+    Protoceratops Gallimimus Plateosaurus Sauropelta Coelophysis
+    Stegoceras Suchomimus Heterodontosaurus Microraptor Therizinosaurus
+    Micropachycephalosaurus Nodosaurus Ouranosaurus Quetzalcoatlus
+    Shunosaurus Sinornithosaurus Styracosaurus Tsintaosaurus
+    Yangchuanosaurus Zalmoxes Amargasaurus Camarasaurus Dryosaurus
+    Einiosaurus Europasaurus Fukuiraptor Gasosaurus Hadrosaurus
+    Hypsilophodon Jobaria Kentrosaurus Lambeosaurus Leaellynasaura
+    Leptoceratops Lophorhothon Magyarosaurus Megalosaurus Minmi
+    Monolophosaurus Nqwebasaurus Nipponosaurus Ornithomimus
+    Pachyrhinosaurus Pentaceratops Psittacosaurus Saurolophus Segisaurus
+    Siamosaurus Sordes Struthiomimus Talarurus Thescelosaurus Torosaurus
+    Tsintaosaurus Tyrannotitan Utahraptor Wuerhosaurus Xenoceratops
+    Yandusaurus Yimenosaurus Zuniceratops Einiosaurus Sinosauropteryx
+    Iberomesornis Dacentrurus Beipiaosaurus Prenocephale Dromaeosaurus
     Othnielia Nanosaurus
     """
 
