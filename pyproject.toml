@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hangman-cli"
-version = "1.2.0"
+version = "1.2.2"
 description = "The classic word game as a CLI app implemented in Python."
 authors = ["Steve Daulton <stevedaulton@gmail.com>"]
 readme = "README.md"

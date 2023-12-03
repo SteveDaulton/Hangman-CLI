@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath('../../hangman'))
 
 project = 'Hangman-CLI'
 author = 'Steve Daulton'
-release = '1.2.0'
+release = '1.2.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
