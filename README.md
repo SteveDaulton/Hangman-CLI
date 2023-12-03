@@ -5,7 +5,7 @@
 # Hangman-CLI
 The classic word game, implemented in Python.
 
-The current version selects words that are all names of animals.
+The current version selects words from a chosen subject.
 
 ## Rules of the game
 #### Objective:
@@ -38,6 +38,8 @@ Latest release (all files):
 
 Each release includes:
 - **hangman.py**: The Python application.
+- **ascii_art.py**: The game's ascii artwork.
+- **lexicon.py**: The game's wordlists.
 - **hangman_installer.run**: An installer for Linux only.
 - **Source code (zip)**: The source code (ZIP archive).
 - **Source code (tar.gz)**: The source code (tarball),
@@ -61,7 +63,9 @@ difficulty with it on your system, please post an issue [HERE](https://github.co
 3. Double-click on the installer to install the game.
 
 The installer will extract the following files:
-* hangman-cli -> `~/.local/bin/hangman-cli`
+* hangman-cli -> ~/.local/bin/Hangman-CLI/hangman-cli
+* ascii_art.py -> ~/.local/bin/Hangman-CLI/ascii_art.py
+* lexicon.py -> ~/.local/bin/Hangman-CLI/lexicon.py
 * hangman-cli.ico -> `~/.local/share/icons/hangman-cli.ico`
 * hangman-cli.desktop -> `~/.local/share/applications/hangman-cli.desktop`
 
@@ -71,34 +75,43 @@ Desktop menu and create a launcher in the `Games` section.
 After installation, the game may be launched, either from your Applications menu
 or by entering the command `hangman-cli` in a Terminal window.
 
+**Uninstalling**
+To uninstall hangman, run the installer in a terminal window:
+
+    bash hangman_installer.run -- --clean
+
 ### All Platforms
 If you don't have Linux, or prefer to play the game without installing,
-Hangman-CLI is also available as a single Python file.
+Hangman-CLI is also available as a ZIP package.
 
 #### Windows
 **Preferred Method:**
 1. Download the file: 
-[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
-2. Double-click on the hangman.py file.
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman-cli.zip)
+2. Extract the contents of the ZIP file somewhere convenient.
+3. Double-click on the hangman.py file.
 
 **Alternate Method:**
 1. Download the file: 
-[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
-2. Open Command Prompt by typing "cmd" in the Start menu.
-3. Use `cd path\to\hangman.py` to navigate to the folder containing `hangman.py`
-4. Launch the game with the command: `py hangman.py`
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman-cli.zip)
+2. Extract the contents of the ZIP file somewhere convenient.
+3. Open Command Prompt by typing "cmd" in the Start menu.
+4. Use `cd path\to\hangman.py` to navigate to the folder containing `hangman.py`
+5. Launch the game with the command: `py hangman.py`
 
 #### macOS
 1. Download the file: 
 [hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
-2. Drag the `hangman.py` file to **PythonLauncher**.
+2. Extract the contents of the ZIP file somewhere convenient.
+3. Drag the `hangman.py` file to **PythonLauncher**.
 
 #### Linux
 1. Download the file: 
-[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman.py)
-2. Open a Terminal window from the Applicatins menu, or "Ctrl + Alt + T".
-3. Use `cd path/to/hangman.py` to navigate to the folder containing `hangman.py`
-4. Launch the game with the command: `python3 hangman.py`
+[hangman.py](https://github.com/SteveDaulton/Hangman-CLI/releases/latest/download/hangman-cli.zip)
+2. Extract the contents of the ZIP file somewhere convenient.
+3. Open a Terminal window from the Applicatins menu, or "Ctrl + Alt + T".
+4. Use `cd path/to/hangman.py` to navigate to the folder containing `hangman.py`
+5. Launch the game with the command: `python3 hangman.py`
 
 ## License
 This program is released under the [MIT license](https://github.com/SteveDaulton/Hangman-CLI/blob/master/LICENSE).
