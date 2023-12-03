@@ -30,7 +30,7 @@ jobs:
       with:
           files: |
             hangman_installer.run
-            hangman/hangman.py
+            hangman/**/*.py
 
       env:
         GITHUB_TOKEN: ${{ secrets.GH_RELEASE }}
