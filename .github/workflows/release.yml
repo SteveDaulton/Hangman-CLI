@@ -25,12 +25,16 @@ jobs:
         chmod +x hangman/install_script.sh
         makeself --sha256 hangman/ hangman_installer.run "Hangman-CLI installer" ./install_script.sh
 
+    - name: Make ZIP Package
+      run: |
+        zip -q hangman-cli.zip hangman/**/*.py
+
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.15
       with:
           files: |
             hangman_installer.run
-            hangman/**/*.py
+            hangman-cli.zip
 
       env:
         GITHUB_TOKEN: ${{ secrets.GH_RELEASE }}
