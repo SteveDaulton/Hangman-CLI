@@ -28,7 +28,7 @@ jobs:
     - name: Make ZIP Package
       run: |
         cd $GITHUB_WORKSPACE
-        zip -q -j hangman-cli.zip hangman/*.py
+        zip -q hangman-cli.zip hangman/*.py
 
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.15
