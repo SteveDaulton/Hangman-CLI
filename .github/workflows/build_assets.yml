@@ -65,3 +65,9 @@ jobs:
         name: hangman_installer
         path: hangman_installer.tar
         if-no-files-found: error
+
+    - name: Upload Py Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: hangman-cli
+        path: hangman/**/*.py
