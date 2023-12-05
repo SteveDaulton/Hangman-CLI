@@ -505,8 +505,7 @@ def new_game(game: Hangman) -> None:
     # player_name initialised only in first game.
     if state.player_name == '':
         state.player_name = ui.do_welcome()
-
-    state.category = ui.prompt_category(get_categories())
+        state.category = ui.prompt_category(get_categories())
 
     ui.print_intro()
 
