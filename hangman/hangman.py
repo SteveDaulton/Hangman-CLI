@@ -226,7 +226,7 @@ class UI:
         """
         self.print_slowly(f"OK {self.game_state.player_name}, let's play.")
         category = self.indefinite_article_category()
-        self.print_slowly(f"I'll think of {category}""", end='')
+        self.print_slowly(f"I'll think of {category}", end='')
         self.print_slowly(' .' * randint(3, 8), speed=5, indent=False)
         UI.clear_terminal()
 
