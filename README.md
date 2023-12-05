@@ -13,16 +13,18 @@ Your goal is to guess the hidden word, phrase, or sentence chosen by the compute
 
 #### How to play:
 1. Enter your name when prompted.
-2. The computer will think of a secret word and tell you how many letters are in the word.
-3. Make guesses one letter at a time to guess the secret word.
-4. Each time you guess a letter, all occurrences of that letter in the word will be shown.
-5. If your guess is incorrect, a part of the hangman figure will be drawn.
-6. Continue guessing letters to reveal the entire word.
-7. You may quit at any time by pressing "Ctrl + C".
+2. Select a category when prompted.
+3. The computer will think of a secret word and tell you how many letters are in the word.
+4. Make guesses one letter at a time to guess the secret word.
+5. If you think that you know the word, you may guess the entire word.
+6. Each time you guess a letter, all occurrences of that letter in the word will be shown.
+7. If your guess is incorrect, a part of the hangman figure will be drawn.
+8. Continue guessing letters to reveal the entire word.
+9. You may quit at any time by pressing "Ctrl + C".
 
 **Winning and Losing:**
 
-* If you correctly guess the entire word before the full hangman figure is drawn, you win.
+* If you correctly guess the word before the full hangman figure is drawn, you win.
 * If the full hangman figure is drawn before you guess the word, you lose.
 
 
