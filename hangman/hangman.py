@@ -484,7 +484,7 @@ class Hangman:
         """Exit the program."""
         self.ui.display_exit_dialog()
         sleep(2)
-        sys.exit()
+        sys.exit(0)
 
 
 def new_game(game: Hangman) -> None:
