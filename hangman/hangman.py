@@ -109,14 +109,21 @@ class GameState:
     def update_state_on_guess(self) -> None:
         """Update the game state based on the current guess.
 
+        Checks first for a whole word guess.
         Tries to remove the guessed letter from the remaining_letters set.
         If the letter is not in the word, increment the image index.
         """
+        if len(self.current_guess) > 1:  # Word guess
+            if self.current_guess == self.word:  # Correct guess
+                self.remaining_letters.clear()
+                self.update_puzzle()
+            else:
+                self.image_idx += 1  # Wrong word.
         try:
             self.remaining_letters.remove(self.current_guess)
             self.update_puzzle()
         except KeyError:
-            self.image_idx += 1  # Not in word
+            self.image_idx += 1  # Not in word.
 
     def update_puzzle(self) -> None:
         """Return updated puzzle.
@@ -124,6 +131,9 @@ class GameState:
         Called by update_game_state to handle updating the puzzle data.
         Add 'True' to each matching tuple and return result.
         """
+        if self.current_guess == self.word:  # Whole word guessed.
+            self.puzzle = [PuzzleLetter(char, True) for char, _ in self.puzzle]
+            return
         self.puzzle = [
             PuzzleLetter(char, val or (char == self.current_guess))
             for char, val in self.puzzle]
@@ -225,14 +235,18 @@ class UI:
         Returns
         -------
         str
-            The guess - a single character string.
+            The guess - a single character or a whole word.
         """
         while True:
             print("Guess a letter: ", end='')
             new_guess = input().strip().upper()
 
+            if len(new_guess) == len(self.game_state.word):
+                return new_guess
+
             if len(new_guess) != 1:
-                print("Guesses must be one letter only.")
+                word_len = len(self.game_state.word)
+                print(f"Guesses must be one letter or the whole {word_len} letter word.")
                 continue
             if new_guess in self.game_state.guesses:
                 print(f"You've already guessed '{new_guess}'")
@@ -372,6 +386,39 @@ class Hangman:
         self.wins: int = 0
         self.losses: int = 0
 
+    def play_game(self) -> bool:
+        """Play game.
+
+        Main game loop.
+
+        Returns
+        -------
+        bool:
+            True if player wins, else False.
+        """
+        self.ui.update_screen(clear=False)
+
+        while self.state.remaining_letters:
+            # Update the game state from player guess.
+            # Get new guess
+            new_guess = self.ui.get_guess()
+            self.update_game_state(new_guess)
+            # Display the result.
+            self.ui.update_screen()
+            if self.is_good_guess():
+                self.ui.display_message(f"{self.state.current_guess} is correct.")
+            else:
+                self.ui.display_message(f"{self.state.current_guess} is wrong.")
+
+            # Return False if hangman complete.
+            if self.player_loses():
+                self.losses += 1
+                self.state.score['losses'] = self.losses
+                return False
+        self.wins += 1
+        self.state.score['wins'] = self.wins
+        return True
+
     def initialise_game(self, puzzle_word: str) -> None:
         """Post-instantiation initialisation.
 
@@ -383,13 +430,14 @@ class Hangman:
     def update_game_state(self, new_guess: str) -> None:
         """Update game attributes according to current guess.
 
-        If current_guess is in word, update game state.
+        Guess may be a single letter or the entire word.
         - update GameState::current_guess
         - update GameState::guesses
-
         Then tell GameState() instance to manage its own update,
         """
         self.state.current_guess = new_guess
+        # state.guesses is usually single letters but may
+        # be a whole word.
         self.state.guesses.add(new_guess)
         self.state.update_state_on_guess()
 
@@ -417,43 +465,6 @@ class Hangman:
         self.ui.display_exit_dialog()
         sleep(2)
         sys.exit()
-
-
-def play_game(game: Hangman) -> bool:
-    """Play game.
-
-    Main game loop.
-
-    Parameters
-    ----------
-    game: Hangman
-        Instance of the game logic class.
-
-    Returns
-    -------
-    bool:
-        True if player wins, else False.
-    """
-    game.ui.update_screen(clear=False)
-
-    while game.state.remaining_letters:
-        # Update the game state from player guess.
-        game.update_game_state(game.ui.get_guess())
-        # Display the result.
-        game.ui.update_screen()
-        if game.is_good_guess():
-            game.ui.display_message(f"{game.state.current_guess} is correct.")
-        else:
-            game.ui.display_message(f"{game.state.current_guess} is wrong.")
-
-        # Return False if hangman complete.
-        if game.player_loses():
-            game.losses += 1
-            game.state.score['losses'] = game.losses
-            return False
-    game.wins += 1
-    game.state.score['wins'] = game.wins
-    return True
 
 
 def new_game(game: Hangman) -> None:
@@ -491,7 +502,7 @@ def new_game(game: Hangman) -> None:
     ui.display_game_start_screen()
 
     # Play game and get result
-    player_wins = play_game(game)
+    player_wins = game.play_game()
     ui.display_game_result(player_wins, state.word)
 
     # Reset for next game.
