@@ -36,7 +36,7 @@ from random import randint
 from time import sleep
 
 from ascii_art import ascii_images as art
-from lexicon import get_word_list, get_categories
+from lexicon import get_word_list, get_categories, HELP_TEXT
 
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
 """Type definition for a namedtuple('character', 'guessed').
@@ -196,8 +196,10 @@ class UI:
         player_name = input().title()
         self.print_slowly(f"Hello {player_name}.", end='\n\n')
         self.print_slowly(
-            "You can quit at any time by pressing 'Ctrl + C'.",
-            speed=8, end='\n\n')
+            "You can quit at any time by pressing 'Ctrl + C',",
+            speed=8)
+        self.print_slowly("or enter '?' to view help.",
+                          speed=8, end='\n\n')
         return player_name
 
     def prompt_category(self, categories: tuple) -> str:
@@ -213,6 +215,9 @@ class UI:
             self.display_message(f"{idx + 1}. {cat.title()}")
         while True:
             category = input("Enter a number: ")
+            if category == '?':
+                self.display_help()
+                return ''
             try:
                 category = categories[int(category) - 1]
             except (ValueError, IndexError):
@@ -229,6 +234,14 @@ class UI:
         self.print_slowly(f"I'll think of {category}", end='')
         self.print_slowly(' .' * randint(3, 8), speed=5, indent=False)
         UI.clear_terminal()
+
+    def display_help(self):
+        """Display Help screen."""
+        self.clear_terminal()
+        self.display_message(HELP_TEXT)
+        self.display_message("Press any key to continue:")
+        input()
+        self.clear_terminal()
 
     def get_guess(self) -> str:
         """Return a new guess.
@@ -300,6 +313,9 @@ class UI:
         while True:
             self.display_message(prompt, end='')
             val = input().strip().lower()
+            if val == '?':
+                self.display_help()
+                continue
             if val in ('y', 'yes'):
                 return True
             if val in ('n', 'no'):
@@ -419,6 +435,9 @@ class Hangman:
             # Update the game state from player guess.
             # Get new guess
             new_guess = self.ui.get_guess()
+            if new_guess == '?':
+                self.ui.display_help()
+                continue
             self.update_game_state(new_guess)
             # Display the result.
             self.ui.update_screen()
@@ -504,7 +523,12 @@ def new_game(game: Hangman) -> None:
     # player_name initialised only in first game.
     if state.player_name == '':
         state.player_name = ui.do_welcome()
-        state.category = ui.prompt_category(get_categories())
+        while True:
+            # Repeat query if prompt returns empty string.
+            category = ui.prompt_category(get_categories())
+            if category:
+                state.category = category
+                break
 
     ui.print_intro()
 

@@ -1,4 +1,7 @@
-"""Word lists for Hangman-CLI game."""
+"""Word lists for Hangman-CLI game.
+
+Also contains help text.
+"""
 
 
 _WORD_LISTS = {
@@ -99,3 +102,25 @@ def get_word_list(category: str = 'animals') -> list[str]:
 def get_categories():
     """Return a tuple of word categories."""
     return tuple(_WORD_LISTS.keys())
+
+
+HELP_TEXT = """
+How to Play
+===========
+
+1. Enter your name when prompted.
+2. Select a category when prompted.
+3. The computer will think of a secret word
+   and tell you how many letters are in the word.
+4. Make guesses one letter at a time to guess
+   the secret word.
+5. If you think that you know the word, you may
+   guess the entire word.
+6. Each time you guess a letter, all occurrences
+   of that letter in the word will be shown.
+7. If your guess is incorrect, a part of the hangman
+   figure will be drawn.
+8. Continue guessing letters to reveal the entire word.
+9. You may quit at any time by pressing "Ctrl + C".
+10.To view the help menu, enter a question mark '?'.
+"""
