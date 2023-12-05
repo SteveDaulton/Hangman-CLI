@@ -9,7 +9,7 @@ The current version selects words from a chosen subject.
 
 ## Rules of the game
 #### Objective:
-Your goal is to guess the hidden word, phrase, or sentence chosen by the computer opponent.
+Your goal is to guess the mystery word chosen by the computer opponent.
 
 #### How to play:
 1. Enter your name when prompted.
