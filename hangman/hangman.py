@@ -263,9 +263,7 @@ class UI:
         sleep(1)
         UI.clear_terminal()
 
-    def display_game_result(self,
-                            is_winner: bool,
-                            correct_answer: str) -> None:
+    def display_game_result(self, is_winner: bool) -> None:
         """Congratulate or console player."""
         self.clear_terminal()
         # Print score
@@ -273,12 +271,13 @@ class UI:
         self.display_message(f"Won: {wins}  Lost: {losses}\n")
 
         if is_winner:
-            self.print_slowly(f"Well done {self.game_state.player_name}. "
-                              f"YOU WIN!", 20)
+            self.print_slowly(f"Well done {self.game_state.player_name}.", 20)
+            self.print_slowly(f"The word was {self.game_state.word.upper()}.")
+            self.print_slowly("YOU WIN!", 20)
         else:
             self.print_slowly(
                 f"Too bad {self.game_state.player_name}, you loose. "
-                f"The word was {correct_answer}.")
+                f"The word was {self.game_state.word.upper()}.")
             self.print_slowly("Better luck next time.", 6)
 
     def get_image(self) -> str:
@@ -344,8 +343,12 @@ class UI:
     def clear_terminal() -> None:
         """Clear the terminal.
 
-        This method is intended to support both Posix and Windows
-        even though hangman-cli 1.x only officially supports Linux."""
+        This method is intended to support both Posix and Windows.
+        Disabled on Linux if not in a terminal.
+        """
+        if (sys.platform.startswith('linux') and
+                'TERM' not in os.environ):
+            return
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def print_slowly(self,
@@ -422,7 +425,7 @@ class Hangman:
             new_guess = self.ui.get_guess()
             self.update_game_state(new_guess)
             # Display the result.
-            self.ui.update_screen()
+            self.ui.update_screen(clear=False)
             if self.is_good_guess():
                 self.ui.display_message(
                     f"{self.state.current_guess} is correct.")
@@ -522,7 +525,7 @@ def new_game(game: Hangman) -> None:
 
     # Play game and get result
     player_wins = game.play_game()
-    ui.display_game_result(player_wins, state.word)
+    ui.display_game_result(player_wins)
 
     # Reset for next game.
     state.reset_current_game()
