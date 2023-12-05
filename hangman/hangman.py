@@ -210,7 +210,7 @@ class UI:
         """
         self.display_message("Select one of these categories:")
         for idx, cat in enumerate(categories):
-            self.display_message(f"{idx}. {cat}")
+            self.display_message(f"{idx}. {cat.title()}")
         while True:
             category = input("Enter a number: ")
             try:
