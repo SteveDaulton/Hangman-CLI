@@ -241,15 +241,12 @@ class UI:
             print("Guess a letter: ", end='')
             new_guess = input().strip().upper()
 
-            if len(new_guess) == len(self.game_state.word):
-                return new_guess
-
-            if len(new_guess) != 1:
-                word_len = len(self.game_state.word)
-                print(f"Guesses must be one letter or the whole {word_len} letter word.")
-                continue
             if new_guess in self.game_state.guesses:
                 print(f"You've already guessed '{new_guess}'")
+                continue
+            if len(new_guess) != 1 and len(new_guess) != len(self.game_state.word):
+                word_len = len(self.game_state.word)
+                print(f"Guesses must be one letter or the whole {word_len} letter word.")
                 continue
             return new_guess
 
