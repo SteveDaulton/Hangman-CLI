@@ -210,11 +210,11 @@ class UI:
         """
         self.display_message("Select one of these categories:")
         for idx, cat in enumerate(categories):
-            self.display_message(f"{idx}. {cat.title()}")
+            self.display_message(f"{idx + 1}. {cat.title()}")
         while True:
             category = input("Enter a number: ")
             try:
-                category = categories[int(category)]
+                category = categories[int(category) - 1]
             except (ValueError, IndexError):
                 self.display_message(f"{category} is not an option.")
                 self.display_message("Please try again.")
@@ -225,7 +225,8 @@ class UI:
         """Print introduction to game.
         """
         self.print_slowly(f"OK {self.game_state.player_name}, let's play.")
-        self.print_slowly("I'll think of a word""", end='')
+        category = self.indefinite_article_category()
+        self.print_slowly(f"I'll think of {category}""", end='')
         self.print_slowly(' .' * randint(3, 8), speed=5, indent=False)
         UI.clear_terminal()
 
@@ -254,8 +255,10 @@ class UI:
 
     def display_game_start_screen(self) -> None:
         """Inform user of word length."""
+
+        category = self.indefinite_article_category()
         self.print_slowly(
-            "I've thought of a word.\n"
+            f"I've thought of {category}.\n"
             f"The word has {len(self.game_state.word)} letters.")
         sleep(1)
         UI.clear_terminal()
@@ -321,6 +324,21 @@ class UI:
         output = [f'{char} ' if val else '_ ' for
                   char, val in self.game_state.puzzle]
         self.display_message(f'{"".join(output)}\n\n')
+
+    def indefinite_article_category(self) -> str:
+        """Prefix category with indefinite article.
+
+        Returns
+        -------
+        str:
+            "a <text>" or "an <text>"
+        """
+        # Strip plural 's'.
+        category = self.game_state.category[:-1]
+        # Append indefinite article.
+        if category[0] in 'aeiou':
+            return f"an {category}"
+        return f"a {category}"
 
     @staticmethod
     def clear_terminal() -> None:
