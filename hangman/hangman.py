@@ -244,9 +244,11 @@ class UI:
             if new_guess in self.game_state.guesses:
                 print(f"You've already guessed '{new_guess}'")
                 continue
-            if len(new_guess) != 1 and len(new_guess) != len(self.game_state.word):
+            if (len(new_guess) != 1 and
+                    len(new_guess) != len(self.game_state.word)):
                 word_len = len(self.game_state.word)
-                print(f"Guesses must be one letter or the whole {word_len} letter word.")
+                print("Guesses must be one letter or"
+                      f"the whole {word_len} letter word.")
                 continue
             return new_guess
 
@@ -403,9 +405,11 @@ class Hangman:
             # Display the result.
             self.ui.update_screen()
             if self.is_good_guess():
-                self.ui.display_message(f"{self.state.current_guess} is correct.")
+                self.ui.display_message(
+                    f"{self.state.current_guess} is correct.")
             else:
-                self.ui.display_message(f"{self.state.current_guess} is wrong.")
+                self.ui.display_message(
+                    f"{self.state.current_guess} is wrong.")
 
             # Return False if hangman complete.
             if self.player_loses():
