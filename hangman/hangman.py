@@ -297,18 +297,14 @@ class UI:
         bool
             True if yes, else False.
         """
-        yes = ('y', 'yes')
-        no = ('n', 'no')
         while True:
             self.display_message(prompt, end='')
-            val = input()
-            if val in yes:
-                self.clear_terminal()
+            val = input().strip().lower()
+            if val in ('y', 'yes'):
                 return True
-            if val in no:
-                self.clear_terminal()
+            if val in ('n', 'no'):
                 return False
-            print("Enter 'Y' or 'N'.")
+            self.display_message("Enter 'Y' or 'N'.")
 
     def update_screen(self, clear: bool = True) -> None:
         """Refresh screen with current game state."""
@@ -425,7 +421,7 @@ class Hangman:
             new_guess = self.ui.get_guess()
             self.update_game_state(new_guess)
             # Display the result.
-            self.ui.update_screen(clear=False)
+            self.ui.update_screen()
             if self.is_good_guess():
                 self.ui.display_message(
                     f"{self.state.current_guess} is correct.")
