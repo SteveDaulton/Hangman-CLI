@@ -378,6 +378,7 @@ class Hangman:
     self.ui: UI
         User interface.
     """
+
     def __init__(self) -> None:
         """Constructor of game logic class."""
         self.state = GameState()
