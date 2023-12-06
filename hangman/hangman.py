@@ -4,12 +4,12 @@
 """Hangman - A simple CLI game.
 
 Guess a secret word letter by letter.
-The player has a limited number of incorrect guesses before
-the hangman is fully drawn.
+The player has a limited number of incorrect guesses before the hangman
+is fully drawn.
 
-This game displays ASCII art of the hangman, and updates it with
-each incorrect guess. The player wins by guessing all letters of
-the secret word correctly within the given attempts.
+This game displays ASCII art of the hangman, and updates it with each
+incorrect guess. The player wins by guessing all letters of the secret word
+correctly within the given attempts.
 
 Usage:
     python3 hangman.py
@@ -36,7 +36,7 @@ from random import randint
 from time import sleep
 
 from ascii_art import ascii_images as art
-from lexicon import get_word_list, get_categories, HELP_TEXT
+from lexicon import lexicon_dict, HELP_TEXT
 
 PuzzleLetter = namedtuple('PuzzleLetter', ['character', 'guessed'])
 """Type definition for a namedtuple('character', 'guessed').
@@ -54,7 +54,7 @@ Puzzle = list[PuzzleLetter]
 def get_secret_word(category: str) -> str:
     """Return a random word from multiple options."""
     try:
-        words: list[str] = get_word_list(category)
+        words: list[str] = lexicon_dict[category].word_list
     except ValueError as exc:
         raise RuntimeError("Unable to retrieve word list.") from exc
     secret_word = words[randint(0, len(words) - 1)]
@@ -200,6 +200,7 @@ class UI:
             speed=8)
         self.print_slowly("or enter '?' to view help.",
                           speed=8, end='\n\n')
+        self.print_slowly(f"OK {player_name}, let's play.\n")
         return player_name
 
     def prompt_category(self, categories: tuple) -> str:
@@ -229,8 +230,7 @@ class UI:
     def print_intro(self) -> None:
         """Print introduction to game.
         """
-        self.print_slowly(f"OK {self.game_state.player_name}, let's play.")
-        category = self.indefinite_article_category()
+        category = lexicon_dict[self.game_state.category].singular
         self.print_slowly(f"I'll think of {category}", end='')
         self.print_slowly(' .' * randint(3, 8), speed=5, indent=False)
         UI.clear_terminal()
@@ -269,7 +269,7 @@ class UI:
     def display_game_start_screen(self) -> None:
         """Inform user of word length."""
 
-        category = self.indefinite_article_category()
+        category = lexicon_dict[self.game_state.category].singular
         self.print_slowly(
             f"I've thought of {category}.\n"
             f"The word has {len(self.game_state.word)} letters.")
@@ -335,21 +335,6 @@ class UI:
         output = [f'{char} ' if val else '_ ' for
                   char, val in self.game_state.puzzle]
         self.display_message(f'{"".join(output)}\n\n')
-
-    def indefinite_article_category(self) -> str:
-        """Prefix category with indefinite article.
-
-        Returns
-        -------
-        str:
-            "a <text>" or "an <text>"
-        """
-        # Strip plural 's'.
-        category = self.game_state.category[:-1]
-        # Append indefinite article.
-        if category[0] in 'aeiou':
-            return f"an {category}"
-        return f"a {category}"
 
     @staticmethod
     def clear_terminal() -> None:
@@ -525,7 +510,8 @@ def new_game(game: Hangman) -> None:
         state.player_name = ui.do_welcome()
         while True:
             # Repeat query if prompt returns empty string.
-            category = ui.prompt_category(get_categories())
+            categories = tuple(lexicon_dict.keys())
+            category = ui.prompt_category(categories)
             if category:
                 state.category = category
                 break

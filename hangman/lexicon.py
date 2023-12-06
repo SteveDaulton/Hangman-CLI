@@ -1,10 +1,22 @@
 """Word lists for Hangman-CLI game.
 
-Also contains help text.
+The _LEXICON_DICT dictionary has string values that can be split into lists.
+This makes it much easier to add more lists, but the downside is that we can
+only have single word puzzles.
+
+When we fetch a word list for a specific category, we get a named tuple
+called Lexicon, which contains the word list itself, and the singular form
+of the category including the appropriate indefinite article.
+For example, for the category "countries", we get a list of countries
+and the string "a country".
+
+This module also contains help text.
 """
 
+from collections import namedtuple
 
-_WORD_LISTS = {
+
+_LEXICON_DICT = {
     'animals': """
     Dog Cat Elephant Lion Tiger Giraffe Zebra Bear Koala
     Panda Kangaroo Penguin Dolphin Eagle Owl Fox Wolf Cheetah
@@ -14,7 +26,7 @@ _WORD_LISTS = {
     Anteater Camel Dingo Kangaroo Rat Lemur Meerkat Ocelot Parrot
     Quokka Vulture Wombat Yak Iguana jaguar Kakapo Lemming
     Manatee Nutria Ostrich Pangolin Quail Rhinoceros Serval
-    Wallaby Coypu Tapir Pheasant
+    Wallaby Coypu Tapir Pheasant beaver frog mongoose Anaconda
     """,
 
     'dinosaurs': """
@@ -59,7 +71,8 @@ _WORD_LISTS = {
     Birch Avocado Pecan Hickory Mulberry Persimmon Dogwood Banyan
     """,
 
-    'hard words': """abruptly absurd abyss affix askew avenue awkward
+    'hard words': """
+    abruptly absurd abyss affix askew avenue awkward
     axiom azure bagpipes bandwagon banjo bayou beekeeper bikini blitz
     blizzard boggle bookworm boxcar boxful buckaroo buffalo buffoon
     buxom buzzard buzzing buzzwords caliph cobweb cockiness croquet
@@ -84,24 +97,61 @@ _WORD_LISTS = {
     whiskey whizzing whomever wimpy witchcraft wizard woozy wristwatch
     wyvern xylophone yachtsman yippee yoked youthful yummy zephyr zigzag
     zigzagging zilch zipper zodiac zombie
-"""
+    """,
+
+    'countries': """
+    Afghanistan Albania Algeria Andorra Angola Antigua Argentina
+    Armenia Australia Austria Azerbaijan Bahamas Bahrain Bangladesh
+    Barbados Belarus Belgium Belize Benin Bhutan Bolivia Bosnia
+    Botswana Brazil Brunei Bulgaria Burundi Cambodia Cameroon
+    Canada Chad Chile China Colombia Comoros Congo Croatia Cuba
+    Cyprus Denmark Djibouti Dominica Ecuador Egypt Eritrea Estonia
+    Eswatini Ethiopia Fiji Finland France Gabon Gambia Georgia
+    Germany Ghana Greece Grenada Guatemala Guinea Guyana Haiti
+    Honduras Hungary Iceland India Indonesia Iran Iraq Ireland
+    Israel Italy Jamaica Japan Jordan Kazakhstan Kenya Kiribati
+    Korea Kosovo Kuwait Kyrgyzstan Laos Latvia Lebanon Lesotho
+    Liberia Libya Liechtenstein Lithuania Luxembourg Madagascar
+    Malawi Malaysia Maldives Mali Malta Mauritania Mauritius Mexico
+    Micronesia Moldova Monaco Mongolia Montenegro Morocco Mozambique
+    Myanmar Namibia Nauru Nepal Netherlands Nicaragua Niger Nigeria
+    Macedonia Norway Oman Pakistan Palau Palestine Panama Paraguay
+    Peru Philippines Poland Portugal Qatar Romania Russia Rwanda
+    Samoa Senegal Serbia Seychelles Singapore Slovakia Slovenia Somalia
+    Spain Sudan Suriname Sweden Switzerland Syria Taiwan Tajikistan
+    Tanzania Thailand Togo Tonga Trinidad Tunisia Turkey Turkmenistan
+    Tuvalu Uganda Ukraine USA Uruguay England Ireland Scotland Uzbekistan
+    Vanuatu Venezuela Vietnam Yemen Zambia Zimbabwe
+    """
 }
 
 
-def get_word_list(category: str = 'animals') -> list[str]:
+def _get_word_list(category: str = 'animals') -> list[str]:
     """Return a list of words."""
     category = category.lower()
-
     try:
-        words: str = _WORD_LISTS[category]
+        words: str = _LEXICON_DICT[category]
         return [word.upper() for word in words.split()]
     except KeyError as exc:
         raise ValueError("Invalid category.") from exc
 
 
-def get_categories():
-    """Return a tuple of word categories."""
-    return tuple(_WORD_LISTS.keys())
+Lexicon = namedtuple('Lexicon', ['word_list', 'singular'])
+
+lexicon_dict = {
+    'animals': Lexicon(word_list=_get_word_list('animals'),
+                       singular='an animal'),
+    'dinosaurs': Lexicon(word_list=_get_word_list('dinosaurs'),
+                         singular='a dinosaur'),
+    'flowers': Lexicon(word_list=_get_word_list('flowers'),
+                       singular='a flower'),
+    'trees': Lexicon(word_list=_get_word_list('trees'),
+                     singular='a tree'),
+    'countries': Lexicon(word_list=_get_word_list('countries'),
+                         singular='a country'),
+    'hard words': Lexicon(word_list=_get_word_list('hard words'),
+                          singular='a hard word'),
+}
 
 
 HELP_TEXT = """
