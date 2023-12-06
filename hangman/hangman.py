@@ -197,7 +197,7 @@ class UI:
         self.print_slowly(f"Hello {player_name}.", end='\n\n')
         self.print_slowly(
             "You can quit at any time by pressing 'Ctrl + C',",
-            speed=8)
+            speed=20)
         self.print_slowly("or enter '?' to view help.",
                           speed=8, end='\n\n')
         self.print_slowly(f"OK {player_name}, let's play.\n")
@@ -285,7 +285,10 @@ class UI:
 
         if is_winner:
             self.print_slowly(f"Well done {self.game_state.player_name}.", 20)
-            self.print_slowly(f"The word was {self.game_state.word.upper()}.")
+            remaing_guesses = 9 - self.game_state.image_idx
+            self.print_slowly("You got the word "
+                              f"{self.game_state.word.upper()} with "
+                              f"{remaing_guesses} guesses remaining.")
             self.print_slowly("YOU WIN!", 20)
         else:
             self.print_slowly(
