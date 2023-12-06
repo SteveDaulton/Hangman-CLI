@@ -227,7 +227,7 @@ class UI:
             else:
                 return category
 
-    def print_intro(self) -> None:
+    def display_intro(self) -> None:
         """Print introduction to game.
         """
         category = lexicon_dict[self.game_state.category].singular
@@ -519,7 +519,7 @@ def new_game(game: Hangman) -> None:
                 state.category = category
                 break
 
-    ui.print_intro()
+    ui.display_intro()
 
     try:
         secret_word = get_secret_word(state.category)
