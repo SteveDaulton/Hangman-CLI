@@ -14,7 +14,51 @@ This module also contains help text.
 """
 
 from collections import namedtuple
+from pathlib import Path
 
+
+def is_valid_word_list(file_name, max_bytes_to_read=1024):
+    """Return True if file looks like a language dictionary."""
+    encodings = ['utf-8', 'latin-1']
+    for enc in encodings:
+        try:
+            with open(file_name, 'r', encoding=enc) as file:
+                content = file.read(max_bytes_to_read)
+                lines = content.splitlines()  # Split content into lines
+
+                # Check for one word per line within the read content
+                for line in lines:
+                    if len(line.split()) != 1:
+                        return False
+                    for char in line:
+                        if not char.isalpha() and char != "'":
+                            return False
+                return enc
+        except UnicodeDecodeError:
+            # Try next encoding
+            continue
+
+
+def get_system_dictionary(min_len: int = 3) -> list[str] | None:
+    files = ("/usr/share/dict/words",
+             "/usr/dict/words",
+             "/usr/lib/dict/words")
+    lang_dict: Path | None = None
+    for file in files:
+        if Path(file).is_file():
+            lang_dict = Path(file)
+            break
+    if lang_dict and (enc := is_valid_word_list(lang_dict)):
+        with open(lang_dict, 'r', encoding=enc) as fp:
+            word_list = [line.strip() for line in fp.readlines()
+                         if "'" not in line and
+                         min_len <= len(line.strip())]
+            return word_list
+    else:
+        return None
+
+
+_SYSTEM_WORDS: list[str] | None = get_system_dictionary()
 
 _LEXICON_DICT = {
     'animals': """
@@ -126,6 +170,27 @@ _LEXICON_DICT = {
 }
 
 
+def _get_words_of_length(words, min_length, max_length) -> list[str]:
+    """Return words from language dictionary in length range."""
+    return [word.upper() for word in words
+            if min_length <= len(word) <= max_length]
+
+
+Lexicon = namedtuple('Lexicon', ['word_list', 'singular'])
+
+lexicon_dict = {}
+if _SYSTEM_WORDS is not None:
+    lexicon_dict = {
+        'short words': Lexicon(_get_words_of_length(_SYSTEM_WORDS, 3, 5),
+                               singular='a short word'),
+        'medium length words': Lexicon(
+            _get_words_of_length(_SYSTEM_WORDS, 5, 8),
+            singular='a medium length word'),
+        'long words': Lexicon(_get_words_of_length(_SYSTEM_WORDS, 8, 50),
+                              singular='a long word'),
+    }
+
+
 def _get_word_list(category: str = 'animals') -> list[str]:
     """Return a list of words."""
     category = category.lower()
@@ -136,9 +201,8 @@ def _get_word_list(category: str = 'animals') -> list[str]:
         raise ValueError("Invalid category.") from exc
 
 
-Lexicon = namedtuple('Lexicon', ['word_list', 'singular'])
-
-lexicon_dict = {
+# Category words
+lexicon_dict.update({
     'animals': Lexicon(word_list=_get_word_list('animals'),
                        singular='an animal'),
     'dinosaurs': Lexicon(word_list=_get_word_list('dinosaurs'),
@@ -151,7 +215,7 @@ lexicon_dict = {
                          singular='a country'),
     'hard words': Lexicon(word_list=_get_word_list('hard words'),
                           singular='a hard word'),
-}
+})
 
 
 HELP_TEXT = """

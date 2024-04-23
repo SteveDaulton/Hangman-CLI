@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 
 """Hangman - A simple CLI game.
 
@@ -48,7 +47,7 @@ guessed: bool
 """
 
 Puzzle = list[PuzzleLetter]
-"""Type definition for a list of PuzzleLetter's."""
+"""Type definition for a list of PuzzleLetter(s)."""
 
 
 def get_secret_word(category: str) -> str:
