@@ -17,8 +17,9 @@ from collections import namedtuple
 from pathlib import Path
 
 
-def is_valid_word_list(file_name, max_bytes_to_read=1024):
-    """Return True if file looks like a language dictionary."""
+def is_valid_word_list(file_name: Path, max_bytes_to_read=1024) -> str:
+    """Return encoding: str if file looks like a language dictionary
+    else return empty string."""
     encodings = ['utf-8', 'latin-1']
     for enc in encodings:
         try:
@@ -29,26 +30,30 @@ def is_valid_word_list(file_name, max_bytes_to_read=1024):
                 # Check for one word per line within the read content
                 for line in lines:
                     if len(line.split()) != 1:
-                        return False
+                        return ''
                     for char in line:
                         if not char.isalpha() and char != "'":
-                            return False
+                            return ''
                 return enc
         except UnicodeDecodeError:
             # Try next encoding
             continue
+    return ''
 
 
 def get_system_dictionary(min_len: int = 3) -> list[str] | None:
+    """Return list of words or None."""
     files = ("/usr/share/dict/words",
              "/usr/dict/words",
              "/usr/lib/dict/words")
-    lang_dict: Path | None = None
+    enc = ''
+    lang_dict = None
     for file in files:
-        if Path(file).is_file():
-            lang_dict = Path(file)
+        lang_dict = Path(file)
+        if lang_dict.is_file():
+            enc = is_valid_word_list(Path(file))
             break
-    if lang_dict and (enc := is_valid_word_list(lang_dict)):
+    if lang_dict:
         with open(lang_dict, 'r', encoding=enc) as fp:
             word_list = [line.strip() for line in fp.readlines()
                          if "'" not in line and
